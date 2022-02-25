@@ -1,9 +1,15 @@
-package jpql;
+package jpql.TestCode;
 
-import javax.persistence.*;
+import jpql.Member;
+import jpql.Team;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import java.util.List;
 
-public class JpaMain {
+public class SubQuery {
 
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
@@ -17,13 +23,22 @@ public class JpaMain {
 
         try {
 
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             Member member = new Member();
             member.setUsername("member1");
             member.setAge(10);
+            member.changeTeam(team);
             em.persist(member);
 
             em.flush();
             em.clear();
+
+            //FROM 절의 서브 쿼리는 현재 JPQL에서 불가능
+//            String query = "select mm.age, mm.username " +
+//                    "from (select m.age, m.username from Member m) as mm";
 
             //DB에 SQL쿼리를 보내고 커밋
             tx.commit();
